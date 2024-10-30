@@ -1,0 +1,8 @@
+name: LRS3
+name_train: LRS3
+name_val: LRS3
+name_test: LRS3
+train_csv:
+train_labelled_csv:
+val_csv:
+test_csv:

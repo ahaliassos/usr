@@ -1,0 +1,7 @@
+obj:
+  _target_: torch.optim.AdamW
+  betas:
+    - 0.9
+    - 0.999
+weight_decay: 0.04
+scale_sqrt: True  # scaling with batch size

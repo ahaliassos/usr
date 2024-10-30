@@ -1,0 +1,5 @@
+obj:
+  _target_: pytorchvideo.models.hub.resnet.slow_r50
+  input_channel: ${data.channel.in_video_channels}
+  head: none
+output_dim: 2048

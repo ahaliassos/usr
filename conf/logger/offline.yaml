@@ -1,0 +1,6 @@
+_target_: pytorch_lightning.loggers.WandbLogger
+log_model: False
+name: ${experiment_name}
+offline: True
+project: ${project_name}
+mode: disabled

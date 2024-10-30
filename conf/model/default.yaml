@@ -1,0 +1,53 @@
+defaults:
+  - backbone: resnet_transformer_base
+  - predictor_2a: transformer
+  - predictor_a2a: transformer
+  - predictor_v2a: transformer
+  - momentum_scheduler: cosine
+  - language_model: default
+obj:
+  _target_: models.usr.USR
+use_predictor: True
+use_global: False
+sync_batchnorm: True
+audio_steps_per_video_step: 1
+target_dropout_off: True
+masked_only_loss: False
+pretrained_model_path:
+transfer_only_encoder: False
+v2a_weight: 0
+unlab_rel_weight_v: 0.5
+unlab_rel_weight_a: 0.5
+ctc_rel_weight: 0.1
+v_rel_weight: 0.5
+size_average: False
+return_feats:
+norm_targets:
+avg_feats: True
+average_targets: False
+flip_targets: True
+average_pool_kernel: 1
+predictor_stride: 1
+keep_last_avg_pooled: False
+target_dim: ${model.backbone.adim}
+before_norm_targets: False
+after_norm_targets: True
+a2a_pred_to_a2v: False
+avg_branches: False
+pretrained_path:
+use_audio_targets: False
+ce_loss: False
+progressive_growing: False
+conf_threshold: 0.8
+conf_threshold_a: ${model.conf_threshold}
+conf_threshold_ctc: ${model.conf_threshold}
+conf_threshold_ctc_a: ${model.conf_threshold_a}
+seqlen_max: 120
+seqlen_linear_epochs: ${trainer.max_epochs}
+soft_inputs: False
+loss_mean: False
+mask_feats_loss: False
+pretrained_lm_path:
+avg_ckpts: 10
+pred_block_idx: 1
+detach: False

@@ -1,0 +1,12 @@
+precision: 32
+accelerator: auto
+strategy: ddp_find_unused_parameters_true
+devices: auto
+profiler: ${debug.profiler}
+max_epochs: 150
+num_nodes: 1
+sync_batchnorm: ${model.sync_batchnorm}
+num_sanity_val_steps: 10
+limit_val_batches: 1.0
+accumulate_grad_batches: 1
+use_distributed_sampler: False

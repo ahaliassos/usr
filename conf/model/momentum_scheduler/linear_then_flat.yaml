@@ -1,0 +1,4 @@
+_target_: schedulers.linear_then_flat.LinearThenFlatScheduler
+initial: 0.999
+final: 0.99999
+linear_epochs: 50

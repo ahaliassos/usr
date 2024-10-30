@@ -1,0 +1,24 @@
+defaults:
+  - dataset: lrs3
+  - channel: grayscale
+  - crop_type: mouth
+horizontal_flip_prob: 0.5
+use_masking: True
+mask_prob_video: 0.2
+mask_prob_audio: 0.4
+mask_length_video: 3
+mask_length_audio: ${data.mask_length_video}
+frames_per_gpu: 2400
+frames_per_gpu_labelled: 600
+frames_per_gpu_val: 500
+timemask_window: 0.4
+timemask_stride: 1
+timemask_window_audio: 0.6
+timemask_stride_audio: 2
+lrs2_video_dir:
+lrs2_audio_dir:
+lrs3_video_dir:
+lrs3_audio_dir:
+vox2_video_dir:
+vox2_audio_dir:
+skip_fails: True

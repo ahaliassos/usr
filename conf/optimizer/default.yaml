@@ -1,0 +1,14 @@
+defaults:
+  - optim: adamw
+base_lr: 1e-3
+base_lr_other: ${optimizer.base_lr}
+base_lr_decoder: ${optimizer.base_lr}
+lr_decay_rate: 1.0
+min_lr: 1e-5
+cosine_decay: True
+warmup_epochs: 60
+gradient_clip_val: 3.0
+weight_decay: 0.04
+betas:
+  - 0.9
+  - 0.98

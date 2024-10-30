@@ -1,0 +1,28 @@
+defaults:
+  - checkpoint: last_k
+  - data: default
+  - debug: no_debug
+  - decode: default
+  - logger: default
+  - logging: default
+  - model: default
+  - optimizer: default
+  - trainer: train
+hydra:  
+  output_subdir: null  
+  run:  
+    dir: ${checkpoint.dirpath}/${experiment_name}
+project_name: semi_supervised_usr
+experiment_name:
+num_workers: 8
+log_wandb: True
+replace_sampler_ddp: False
+compile_model: True
+fix_seed: True
+matmul_precision: highest
+ckpt_path:
+gpus:
+test: False
+test_avg: False
+txt_file:
+slurm_job_id:

@@ -1,0 +1,4 @@
+log_gradients: True
+deterministic: True
+profiler: simple
+save_av_sample: True
