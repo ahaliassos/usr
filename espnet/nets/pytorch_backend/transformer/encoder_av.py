@@ -425,33 +425,3 @@ class Encoder(torch.nn.Module):
             xs = self.last_linear(xs)
 
         return xs, masks, feats
-
-    # def forward_one_step(self, xs, masks, cache=None):
-    #     """Encode input frame.
-
-    #     :param torch.Tensor xs: input tensor
-    #     :param torch.Tensor masks: input mask
-    #     :param List[torch.Tensor] cache: cache tensors
-    #     :return: position embedded tensor, mask and new cache
-    #     :rtype Tuple[torch.Tensor, torch.Tensor, List[torch.Tensor]]:
-    #     """
-    #     if isinstance(self.frontend, (Conv1dResNet, Conv3dResNet)):
-    #         xs = self.frontend(xs)
-
-    #     if isinstance(self.embed, Conv2dSubsampling):
-    #         xs, masks = self.embed(xs, masks)
-    #     else:
-    #         xs = self.embed(xs)
-    #     if cache is None:
-    #         cache = [None for _ in range(len(self.encoders))]
-    #     new_cache = []
-    #     for c, e in zip(cache, self.encoders):
-    #         xs, masks = e(xs, masks, cache=c)
-    #         new_cache.append(xs)
-    #     if self.after_norm:
-    #         xs = self.after_norm(xs)
-        
-    #     if self.last_linear:
-    #         xs = self.last_linear(xs)
-
-    #     return xs, masks, new_cache

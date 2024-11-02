@@ -17,7 +17,7 @@ from torchvision.transforms import (
 
 from .dataset_ft import AVDataset
 from .samplers import ByFrameCountSampler, DistributedSamplerWrapper, RandomSamplerWrapper
-from .transforms import AdaptiveLengthTimeMask
+from .transforms import AdaptiveLengthTimeMask, NormalizeVideo
 
 
 def pad(samples, pad_val=0.0):
@@ -73,7 +73,7 @@ class DataModule(LightningDataModule):
         )
         if self.cfg.data.channel.in_video_channels == 1:
             transform.extend([Lambda(lambda x: x.transpose(0, 1)), Grayscale(), Lambda(lambda x: x.transpose(0, 1))])
-        transform.append(instantiate(args.channel.obj))
+        transform.append(NormalizeVideo(args.channel.obj.mean, args.channel.obj.std))
 
         if mode == "train":
             transform.append(
@@ -155,8 +155,8 @@ class DataModule(LightningDataModule):
     def test_dataloader(self):
         ds_args = self.cfg.data.dataset
 
-        transform_video, transform_video_aug = self._video_transform(mode='val')
-        transform_audio, transform_audio_aug = self._raw_audio_transform(mode='val')
+        transform_video = self._video_transform(mode='val')
+        transform_audio = self._raw_audio_transform(mode='val')
 
         test_ds = AVDataset(
             data_path=ds_args.test_csv,
@@ -164,9 +164,7 @@ class DataModule(LightningDataModule):
             audio_path_prefix_lrs2=self.cfg.data.lrs2_audio_dir,
             video_path_prefix_lrs3=self.cfg.data.lrs3_video_dir,
             audio_path_prefix_lrs3=self.cfg.data.lrs3_audio_dir,
-            transforms={
-                'video': transform_video, 'video_aug': transform_video_aug, 'audio': transform_audio, 'audio_aug': transform_audio_aug
-            },
+            transforms={'video': transform_video, 'audio': transform_audio},
         )
         sampler = ByFrameCountSampler(test_ds, self.cfg.data.frames_per_gpu_val, shuffle=False)
         if self.total_gpus > 1:

@@ -17,7 +17,7 @@ from torchvision.transforms import (
 
 from .dataset import AVDataset
 from .samplers import ByFrameCountSampler, DistributedSamplerWrapper, RandomSamplerWrapper
-from .transforms import AdaptiveLengthTimeMask
+from .transforms import AdaptiveLengthTimeMask, NormalizeVideo
 
 
 def pad(samples, pad_val=0.0):
@@ -75,7 +75,7 @@ class DataModule(LightningDataModule):
         )
         if self.cfg.data.channel.in_video_channels == 1:
             transform.extend([Lambda(lambda x: x.transpose(0, 1)), Grayscale(), Lambda(lambda x: x.transpose(0, 1))])
-        transform.append(instantiate(args.channel.obj))
+        transform.append(NormalizeVideo(args.channel.obj.mean, args.channel.obj.std))
 
         transform_aug = deepcopy(transform)
         if mode == "train":

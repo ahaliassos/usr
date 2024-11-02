@@ -16,9 +16,9 @@ class SSLLearner(LightningModule):
         self.cfg = cfg
 
         if cfg.compile_model:
-            self.model =  USR(cfg)
+            self.model =  torch.compile(USR(cfg))
         else:
-            self.model = instantiate(cfg.model.obj, cfg)
+            self.model = USR(cfg)
 
         if cfg.debug.log_gradients:
             self.logger.experiment.watch(self.model, log="gradients")
