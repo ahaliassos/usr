@@ -41,7 +41,7 @@ We provide the checkpoints necessary to reproduce the main results (see Table 3)
 |  Base Plus   |     LRS3+Vox2-en     |  26.5 |  1.6 |  1.3  | [Download](https://drive.google.com/file/d/1bqIvzy9dQZz3Ql6GQxK-RMnMB2s27oVO/view?usp=sharing) | scripts/test/baseplus_high_resource_lrs3vox2.sh |
 |    Large     |     LRS3+Vox2-en     |  22.3 |  1.2 |  1.1  | [Download](https://drive.google.com/file/d/1IO2yxaZLG89R4bwtJNc7TaC8UAs08Jtz/view?usp=sharing) | scripts/test/large_high_resource_lrs3vox2.sh |
 
-## Self-supervised Pre-training
+## Self-Supervised Pre-training
 The following scripts can be used to pre-train each of our models using our self-supervised approach. Please note that we use the CTC and attention losses to "probe" the performance of the representations throughout training. Crucially, no corresponding gradient is passed back to the encoder, which would corrupt the self-supervised nature of the task. 
 
 | Model      | Pre-training Dataset | Checkpoint                                                                                                   | Bash Script                         |
@@ -50,7 +50,7 @@ The following scripts can be used to pre-train each of our models using our self
 | Base Plus  | LRS3+Vox2-en         | [Download](https://drive.google.com/file/d/1wCxpChDQySPraGICZ9QCW9Nzo-EYtX-g/view?usp=sharing)               | scripts/self/baseplus_lrs3vox2.sh   |
 | Large      | LRS3+Vox2-en         | [Download](https://drive.google.com/file/d/18dBUcP9XvRIVZmDw8XTpxD8DKReTpOSI/view?usp=sharing)               | scripts/self/large_lrs3vox2.sh      |
 
-## Semi-supervised Training 
+## Semi-Supervised Training 
 The following scrips can be used to train each of the models for the low- and high-resource settings. To obtain the best results (those presented in Table 3 of the paper), the path for the self-supervised pre-trained model needs to be specified in the bash scrips ("model.pretrained_model_path"). The model can be also trained from scratch by leaving that argument blank.
 
 ### Low-resource
@@ -67,3 +67,9 @@ The following scrips can be used to train each of the models for the low- and hi
 | Base Plus  | LRS3+Vox2-en         | scripts/semi/baseplus_high_resource_lrs3vox2.sh       |
 | Large      | LRS3+Vox2-en         | scripts/semi/large_high_resource_lrs3vox2.sh          |
 
+
+# Demo
+The following command can be run to produce the transcription for the example video in the repo (example.avi and example.wav). Please make sure to download the Base model and provide the path to the .pth file as shown below:
+```
+python demo.py model.pretrained_model_path=${MODEL_PATH}
+``` 
