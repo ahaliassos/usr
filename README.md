@@ -7,6 +7,7 @@ The implementation of the code is based on
 ## Preparation
 ### Installation
 `conda env create -f environment.yml`. Please change the environment prefix, if necessary, and follow the instructions in fairseq_manual/setup_data_utils.py to setup fairseq.
+
 ### Data
 1. LRS3, VoxCeleb2, and LRS2 can be downloaded using the following links:
     * [LRS3](https://www.robots.ox.ac.uk/~vgg/data/lip_reading/lrs3.html)
@@ -21,6 +22,12 @@ The implementation of the code is based on
 The videos and the audio should be placed in directories with names as defined in conf/data/default.yaml (alternatively the arguments for the directory names can be changed). The root of the directory paths should be set in data/dataset/paths.
 4. Download the data paths with the tokenised labels for [LRS3 test set](https://drive.google.com/file/d/11YvNvz1xdmIvTZR0aN-V67Bl2sR7m8Qh/view?usp=sharing), [LRS3 trainval set](https://drive.google.com/file/d/1SGg7AlCdcvUsty9vGdRn3XFnHIJeFK3v/view?usp=sharing), [LRS3 training set](https://drive.google.com/file/d/1wx_dlXn_ACOQCy7dqZzmVwue8k60srx1/view?usp=sharing), [LRS3 validation test](https://drive.google.com/file/d/1mSme1659RD4iyHN8P1tBEIm7qPgsDFCU/view?usp=sharing), and [LRS3 + VoxCeleb2](https://drive.google.com/file/d/16JRcI3leVGeSYWDesKBfpopTRV_1kx99/view?usp=sharing).
 
+
+## Demo
+The following command can be run to produce the transcription for the example video in the repo (example.avi and example.wav). Please make sure to download a Base model from below and provide the path to the .pth file as shown below:
+```
+python demo.py model.pretrained_model_path=${MODEL_PATH}
+``` 
 
 ## Testing
 We provide the checkpoints necessary to reproduce the main results (see Table 3). The corresponding bash scripts can be used to run the inference code. Please fill out the missing values .sh script (e.g., place the path of the downloaded test data csv for the "data.dataset.test_csv" argument)
@@ -66,10 +73,3 @@ The following scrips can be used to train each of the models for the low- and hi
 | Base       | LRS3                 | scripts/semi/base_high_resource_lrs3.sh  |
 | Base Plus  | LRS3+Vox2-en         | scripts/semi/baseplus_high_resource_lrs3vox2.sh       |
 | Large      | LRS3+Vox2-en         | scripts/semi/large_high_resource_lrs3vox2.sh          |
-
-
-# Demo
-The following command can be run to produce the transcription for the example video in the repo (example.avi and example.wav). Please make sure to download the Base model and provide the path to the .pth file as shown below:
-```
-python demo.py model.pretrained_model_path=${MODEL_PATH}
-``` 
