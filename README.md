@@ -73,3 +73,14 @@ The following scrips can be used to train each of the models for the low- and hi
 | Base       | LRS3                 | scripts/semi/base_high_resource_lrs3.sh  |
 | Base Plus  | LRS3+Vox2-en         | scripts/semi/baseplus_high_resource_lrs3vox2.sh       |
 | Large      | LRS3+Vox2-en         | scripts/semi/large_high_resource_lrs3vox2.sh          |
+
+## Citation
+If you find this repo useful for your research, please consider citing the following:
+```bibtex
+@article{haliassos2024unified,
+  title={Unified Speech Recognition: A Single Model for Auditory, Visual, and Audiovisual Inputs},
+  author={Haliassos, Alexandros and Mira, Rodrigo and Chen, Honglie and Landgraf, Zoe and Petridis, Stavros and Pantic, Maja},
+  journal={arXiv preprint arXiv:2411.02256},
+  year={2024}
+}
+```
