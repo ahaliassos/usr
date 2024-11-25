@@ -448,37 +448,3 @@ class AdaptiveLengthTimeMask:
             else:
                 cloned[:, t_start:t_end] = cloned.mean()
         return cloned
-
-
-class AddNoise(object):
-    """Add SNR noise [-1, 1]
-    """
-
-    def __init__(self, noise=np.load('/data/home/pingchuanma/babble_noise/babbleNoise_resample_16K.npy'), snr_target=None, snr_levels=[-5, 0, 5, 10, 15, 20, 9999]):
-        assert noise.dtype in [np.float32, np.float64], "noise only supports float data type"
-        self.noise = noise
-        self.snr_levels = snr_levels
-        self.snr_target = snr_target
-
-    def get_power(self, clip):
-        clip2 = clip.copy()
-        clip2 = clip2 **2
-        return np.sum(clip2) / (len(clip2) * 1.0)
-
-    def __call__(self, signal):
-        device = signal.device
-        signal = signal[0].numpy()
-        assert signal.dtype in [np.float32, np.float64], "signal only supports float32 data type"
-        snr_target = random.choice(self.snr_levels) if not self.snr_target else self.snr_target
-        if snr_target == 9999:
-            return torch.tensor(signal, device=device)
-        else:
-            # -- get noise
-            start_idx = random.randint(0, len(self.noise)-len(signal))
-            noise_clip = self.noise[start_idx:start_idx+len(signal)]
-            sig_power = self.get_power(signal)
-            noise_clip_power = self.get_power(noise_clip)
-            factor = (sig_power / noise_clip_power ) / (10**(snr_target / 10.0))
-            desired_signal = (signal + noise_clip*np.sqrt(factor)).astype(np.float32)
-            torch_desired_signal = torch.tensor(desired_signal, device=device)
-            return torch.unsqueeze(torch_desired_signal, 0)
