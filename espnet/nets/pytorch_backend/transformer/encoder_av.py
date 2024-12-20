@@ -346,7 +346,7 @@ class Encoder(torch.nn.Module):
 
         return xs[:len(xs_v)], xs[len(xs_v):2*len(xs_v)], xs[2*len(xs_v):], masks, feats
 
-    def forward_single(self, xs_v, xs_a, masks, return_feats=False):
+    def forward_single(self, xs_v=None, xs_a=None, masks=None, return_feats=False):
         """Encode input sequence.
 
         :param torch.Tensor xs: input tensor
@@ -355,49 +355,17 @@ class Encoder(torch.nn.Module):
         :return: position embedded tensor and mask
         :rtype Tuple[torch.Tensor, torch.Tensor]:
         """
-        # xs = self.frontend_a(xs)
-        xs_v = self.frontend_v(xs_v)
-        xs_a = self.frontend_a(xs_a)
-        xs = self.linear_av(torch.cat([xs_v, xs_a], dim=-1))
+        assert xs_v is not None or xs_a is not None
 
-        xs = self.embed(xs)
+        if xs_v is not None:
+            xs_v = self.frontend_v(xs_v)
+        if xs_a is not None:
+            xs_a = self.frontend_a(xs_a)
 
-        if return_feats:
-            feats = []
-            for e in self.encoders:
-                xs, masks = e(xs, masks)
-                if isinstance(xs, tuple):
-                    feat = xs[0]
-                else:
-                    feat = xs
-                feats.append(feat)
-            feats = torch.stack(feats)
+        if xs_v is not None and xs_a is not None:
+            xs = self.linear_av(torch.cat([xs_v, xs_a], dim=-1))
         else:
-            xs, masks = self.encoders(xs, masks)
-            feats = None
-
-        if isinstance(xs, tuple):
-            xs = xs[0]
-
-        if self.after_norm:
-            xs = self.after_norm(xs)
-        
-        if self.last_linear:
-            xs = self.last_linear(xs)
-
-        return xs, masks, feats
-
-    def forward_video(self, xs_v, masks, return_feats=False):
-        """Encode input sequence.
-
-        :param torch.Tensor xs: input tensor
-        :param torch.Tensor masks: input mask
-        :param str extract_features: the position for feature extraction
-        :return: position embedded tensor and mask
-        :rtype Tuple[torch.Tensor, torch.Tensor]:
-        """
-        xs_v = self.frontend_v(xs_v)
-        xs = self.linear_v(xs_v)
+            xs = self.linear_v(xs_v) if xs_v is not None else self.linear_a(xs_a)
 
         xs = self.embed(xs)
 

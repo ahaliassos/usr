@@ -138,10 +138,6 @@ class USRSingle(nn.Module):
     def get_encoded_features(self, video, audio, padding_mask, return_feats=False):
         x_v, x_a, x_av, _, _ = self.backbone.encoder(video, audio, padding_mask, return_feats=return_feats)
         return x_v, x_a, x_av
-
-    def get_encoded_video_features(self, video, padding_mask, return_feats=False):
-        x_v, _, _ = self.backbone.encoder.forward_video(video, padding_mask, return_feats=return_feats)
-        return x_v
     
     def get_encoder_losses(
             self, x_v, x_a, x_av, padding_mask, ctc_targets, is_labelled, mask_conf=None, mask_conf_a=None

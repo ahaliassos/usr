@@ -159,7 +159,6 @@ class SSLLearner(LightningModule):
             sampler.set_epoch(self.current_epoch)
         return super().on_train_epoch_start()
 
-    # potentially want different schedulers for predictors and rest of model
     def configure_optimizers(self):
         def get_param_groups(
                 model, lr_encoder, lr_decoder, weight_decay

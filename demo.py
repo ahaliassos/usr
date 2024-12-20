@@ -105,7 +105,8 @@ def main(cfg):
 
     beam_search = get_beam_search(cfg, model)
 
-    feat, _, _ = model.encoder.forward_single(video, audio.unsqueeze(0).transpose(1, 2), None)
+    # AV
+    feat, _, _ = model.encoder.forward_single(xs_v=video, xs_a=audio.unsqueeze(0).transpose(1, 2))
     
     nbest_hyps = beam_search(
             x=feat.squeeze(0),
@@ -122,8 +123,47 @@ def main(cfg):
     transcription = transcription.replace("<eos>", "")
     transcription = transcription.replace("▁", " ").strip()
 
-    print(transcription)
+    print("AV transcription:", transcription)
 
+    # A
+    feat, _, _ = model.encoder.forward_single(xs_a=audio.unsqueeze(0).transpose(1, 2))
+    
+    nbest_hyps = beam_search(
+            x=feat.squeeze(0),
+            modality="a",
+            maxlenratio=cfg.decode.maxlenratio,
+            minlenratio=cfg.decode.minlenratio
+        )
+    
+    nbest_hyps = [
+        h.asdict() for h in nbest_hyps[: min(len(nbest_hyps), 1)]
+    ]
+
+    transcription = add_results_to_json(nbest_hyps, UNIGRAM1000_LIST)
+    transcription = transcription.replace("<eos>", "")
+    transcription = transcription.replace("▁", " ").strip()
+
+    print("A transcription:", transcription)
+
+    # V
+    feat, _, _ = model.encoder.forward_single(xs_v=video)
+    
+    nbest_hyps = beam_search(
+            x=feat.squeeze(0),
+            modality="v",
+            maxlenratio=cfg.decode.maxlenratio,
+            minlenratio=cfg.decode.minlenratio
+        )
+    
+    nbest_hyps = [
+        h.asdict() for h in nbest_hyps[: min(len(nbest_hyps), 1)]
+    ]
+
+    transcription = add_results_to_json(nbest_hyps, UNIGRAM1000_LIST)
+    transcription = transcription.replace("<eos>", "")
+    transcription = transcription.replace("▁", " ").strip()
+
+    print("V transcription:", transcription)
 
 if __name__ == "__main__":
     main()

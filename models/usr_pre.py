@@ -15,7 +15,7 @@ from .utils import EMA, set_requires_grad
 
 
 class USRSingle(nn.Module):
-    def __init__(self, cfg, backbone_args=None, pred_v2a=None, pred_a2a=None):
+    def __init__(self, cfg, backbone_args=None, pred=None):
         super().__init__()
         self.cfg = cfg
 
@@ -24,7 +24,7 @@ class USRSingle(nn.Module):
 
         self.backbone = E2E(self.odim, backbone_args, True)
 
-        self.predictor_v2a = instantiate(pred_v2a) if pred_v2a else None
+        self.predictor = instantiate(pred) if pred else None
 
         self.target_backbone = self.get_target_model(self.backbone.encoder)
         self.out_layer_unlabelled_v = nn.Linear(backbone_args.ddim, self.odim)
@@ -162,7 +162,6 @@ class USRSingle(nn.Module):
         return loss_att_v, loss_att_a, loss_att_av, acc_v, acc_a, acc_av
 
     def get_raven_losses(self, x_v, x_a, x_av, targets, padding_mask, mask):
-        # mask_loss = torch.cat([padding_mask, mask, mask])
         mask_loss = torch.cat([mask, mask, mask])
         mask_cat = torch.cat([mask, mask])
         padding_mask_cat = torch.cat([padding_mask, padding_mask])
@@ -170,24 +169,21 @@ class USRSingle(nn.Module):
 
         x = torch.cat([x_v, x_a, x_av])
 
-        p_v = self.predictor_v2a(x_v, padding_mask.unsqueeze(-2), token_mask=mask)[0]
-        # p_a = self.predictor_a2a(torch.cat([x_a, x_av]), padding_mask_cat.unsqueeze(-2), token_mask=mask_cat)[0]
-        p_a = self.predictor_v2a(torch.cat([x_a, x_av]), padding_mask_cat.unsqueeze(-2), token_mask=mask_cat)[0]
+        p_v = self.predictor(x_v, padding_mask.unsqueeze(-2), token_mask=mask)[0]
+        p_a = self.predictor(torch.cat([x_a, x_av]), padding_mask_cat.unsqueeze(-2), token_mask=mask_cat)[0]
 
         loss = -F.cosine_similarity(torch.cat([p_v, p_a]), targets, dim=-1)
         loss = loss.masked_fill(mask_loss == 0, 0.)
         loss_v, loss_a, loss_av = loss[:len(x_v)], loss[len(x_v):2*len(x_v)], loss[2*len(x_v):]
 
-        # return loss_v.sum() / padding_mask.sum(), loss_a.sum() / mask.sum(), loss_av.sum() / mask.sum()
         return loss_v.sum() / mask.sum(), loss_a.sum() / mask.sum(), loss_av.sum() / mask.sum()
 
 
 class USR(nn.Module):
     def __init__(self, cfg=None):
         super().__init__()
-        pred_v2a = cfg.model.predictor_v2a
-        pred_a2a = cfg.model.predictor_a2a
-        self.model = USRSingle(cfg, cfg.model.backbone, pred_v2a, pred_a2a)
+        pred = cfg.model.predictor_v2a
+        self.model = USRSingle(cfg, cfg.model.backbone, pred)
         self.cfg = cfg
 
     def update_moving_average(self, momentum):
